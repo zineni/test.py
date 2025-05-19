@@ -1,0 +1,5 @@
+def test(name):
+    if name == "hi":
+        print("hi")
+    else: 
+        print("lol")
