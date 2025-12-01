@@ -1,12 +1,5 @@
-# ==================== ОСНОВНЫЕ АЛГОРИТМЫ ====================
 
-# Алгоритм 1: Два бита контроля четности (сумма цифр mod 2)
 def algorithm1(N):
-    """
-    Складываются все цифры двоичной записи, 
-    остаток от деления суммы на 2 дописывается справа,
-    затем повторяется для новой записи
-    """
     binary = bin(N)[2:]
     s = sum(int(d) for d in binary)
     b1 = s % 2
@@ -16,12 +9,7 @@ def algorithm1(N):
     binary += str(b2)
     return int(binary, 2)
 
-# Алгоритм 2: Добавление 00/11 в зависимости от четности N
 def algorithm2(N):
-    """
-    Если N четное - дописываются два нуля,
-    если нечетное - дописываются две единицы
-    """
     binary = bin(N)[2:]
     if N % 2 == 0:
         binary += '00'
@@ -29,12 +17,7 @@ def algorithm2(N):
         binary += '11'
     return int(binary, 2)
 
-# Алгоритм 3: Добавление 10/01 в зависимости от четности N
 def algorithm3(N):
-    """
-    Если N четное - дописывается 10,
-    если нечетное - дописывается 01
-    """
     binary = bin(N)[2:]
     if N % 2 == 0:
         binary += '10'
@@ -42,37 +25,20 @@ def algorithm3(N):
         binary += '01'
     return int(binary, 2)
 
-# Алгоритм 4: Инвертирование битов и вычитание
 def algorithm4(N, bit_length=8):
-    """
-    Строится двоичная запись (дополненная до bit_length бит),
-    все биты инвертируются, затем из исходного вычитается полученное
-    """
     binary = bin(N)[2:].zfill(bit_length)
     inverted = ''.join('1' if b == '0' else '0' for b in binary)
     new_num = int(inverted, 2)
     return N - new_num
 
-# Алгоритм 5: Добавление двух первых цифр в обратном порядке
 def algorithm5(N):
-    """
-    В конец двоичной записи добавляются 
-    две первые цифры в обратном порядке
-    """
     binary = bin(N)[2:]
     if len(binary) >= 2:
         first_two = binary[:2]
         binary += first_two[::-1]
     return int(binary, 2)
 
-# Алгоритм 6: Добавление бита по правилу (редкая/последняя цифра)
 def algorithm6(N, steps=3):
-    """
-    Подсчитываются нули и единицы:
-    - если поровну: добавляется последняя цифра
-    - иначе: добавляется редкая цифра
-    Повторяется steps раз
-    """
     binary = bin(N)[2:]
     for _ in range(steps):
         zeros = binary.count('0')
@@ -83,12 +49,7 @@ def algorithm6(N, steps=3):
             binary += '0' if zeros < ones else '1'
     return int(binary, 2)
 
-# Алгоритм 7: Добавление в начало и конец в зависимости от четности
 def algorithm7(N):
-    """
-    Если N четное: в начало 1, в конец 0
-    Если N нечетное: в начало 11, в конец 11
-    """
     binary = bin(N)[2:]
     if N % 2 == 0:
         binary = '1' + binary + '0'
@@ -96,12 +57,7 @@ def algorithm7(N):
         binary = '11' + binary + '11'
     return int(binary, 2)
 
-# Алгоритм 8: Добавление префикса в зависимости от четности
 def algorithm8(N):
-    """
-    Если N четное: слева дописывается 10
-    Если N нечетное: слева 1, справа 01
-    """
     binary = bin(N)[2:]
     if N % 2 == 0:
         binary = '10' + binary
@@ -109,32 +65,18 @@ def algorithm8(N):
         binary = '1' + binary + '01'
     return int(binary, 2)
 
-# Алгоритм 9: Инвертирование битов (простой вариант)
 def algorithm9(N, bit_length=8):
-    """
-    Строится двоичная запись, инвертируются биты,
-    переводится в десятичную систему
-    """
     binary = bin(N)[2:].zfill(bit_length)
     inverted = ''.join('1' if b == '0' else '0' for b in binary)
     return int(inverted, 2)
 
-# Алгоритм 10: Однократное добавление бита четности
 def algorithm10(N):
-    """
-    Складываются все цифры двоичной записи,
-    остаток от деления суммы на 2 дописывается справа
-    """
     binary = bin(N)[2:]
     s = sum(int(d) for d in binary)
     binary += str(s % 2)
     return int(binary, 2)
 
-# ==================== ПРИМЕРЫ ИСПОЛЬЗОВАНИЯ ====================
-
 if __name__ == "__main__":
-    # Примеры использования всех алгоритмов
-    
     test_number = 42
     
     print(f"Исходное число: {test_number}")
