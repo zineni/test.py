@@ -1,5 +1,351 @@
-def test(name):
-    if name == "hi":
-        print("hi")
-    else: 
-        print("lol")
+# ================== ЗАДАНИЕ 2 ==================
+def task2():
+    """Максимальное N, дающее R <= 37"""
+    def process(n):
+        # Шаг 1
+        binary = bin(n)[2:]
+        
+        # Шаг 2
+        if n % 2 == 0:
+            binary += '0'
+        else:
+            binary += '1'
+        
+        # Шаг 3
+        ones_count = binary.count('1')
+        if ones_count % 3 == 0:
+            binary = '11' + binary[2:]
+        else:
+            binary = '10' + binary[2:]
+        
+        return int(binary, 2)
+    
+    max_n = 0
+    for n in range(1, 1000):
+        r = process(n)
+        if r <= 37:
+            if n > max_n:
+                max_n = n
+    return max_n
+
+# ================== ЗАДАНИЕ 3 ==================
+def task3():
+    """Минимальное N, дающее R >= 26"""
+    def process(n):
+        binary = bin(n)[2:]
+        
+        if len(binary) % 2 == 0:
+            mid = len(binary) // 2
+            binary = binary[:mid] + '1' + binary[mid:]
+        
+        return int(binary, 2)
+    
+    for n in range(1, 1000):
+        r = process(n)
+        if r >= 26:
+            return n
+    return None
+
+# ================== ЗАДАНИЕ 4 ==================
+def task4():
+    """Максимальное N, дающее R <= 26"""
+    def process(n):
+        binary = bin(n)[2:]
+        
+        if len(binary) % 2 == 0:
+            mid = len(binary) // 2
+            binary = binary[:mid] + '11' + binary[mid:]
+        
+        return int(binary, 2)
+    
+    max_n = 0
+    for n in range(1, 1000):
+        r = process(n)
+        if r <= 26:
+            if n > max_n:
+                max_n = n
+    return max_n
+
+# ================== ЗАДАНИЕ 5 ==================
+def task5():
+    """Наибольшее трёхзначное число, дающее результат 9752"""
+    def process(num):
+        a, b, c = map(int, str(num))
+        sum1 = a*a + b*b
+        sum2 = b*b + c*c
+        if sum1 >= sum2:
+            return int(str(sum1) + str(sum2))
+        else:
+            return int(str(sum2) + str(sum1))
+    
+    result = 9752
+    max_num = 0
+    for num in range(100, 1000):
+        if process(num) == result:
+            if num > max_num:
+                max_num = num
+    return max_num
+
+# ================== ЗАДАНИЕ 6 ==================
+def task6():
+    """Наибольшее трёхзначное число, дающее результат 7434"""
+    def process(num):
+        a, b, c = map(int, str(num))
+        sum1 = a*a + b*b
+        sum2 = b*b + c*c
+        if sum1 >= sum2:
+            return int(str(sum1) + str(sum2))
+        else:
+            return int(str(sum2) + str(sum1))
+    
+    result = 7434
+    max_num = 0
+    for num in range(100, 1000):
+        if process(num) == result:
+            if num > max_num:
+                max_num = num
+    return max_num
+
+# ================== ЗАДАНИЕ 7 ==================
+def task7():
+    """Наибольшее трёхзначное число, дающее результат 33621"""
+    def process(num):
+        a, b, c = map(int, str(num))
+        product = a * b * c
+        sum_digits = a + b + c
+        
+        if product >= sum_digits:
+            return int(str(product) + str(sum_digits))
+        else:
+            return int(str(sum_digits) + str(product))
+    
+    result = 33621
+    max_num = 0
+    for num in range(100, 1000):
+        if process(num) == result:
+            if num > max_num:
+                max_num = num
+    return max_num
+
+# ================== ЗАДАНИЕ 8 ==================
+def task8():
+    """Наибольшее трёхзначное число, дающее результат 24019"""
+    def process(num):
+        a, b, c = map(int, str(num))
+        product = a * b * c
+        sum_digits = a + b + c
+        
+        if product >= sum_digits:
+            return int(str(product) + str(sum_digits))
+        else:
+            return int(str(sum_digits) + str(product))
+    
+    result = 24019
+    max_num = 0
+    for num in range(100, 1000):
+        if process(num) == result:
+            if num > max_num:
+                max_num = num
+    return max_num
+
+# ================== ЗАДАНИЕ 11 ==================
+def task11():
+    """Наибольшее N, дающее R < 64"""
+    def process(n):
+        # Шаг 1
+        step1 = n - (n % 4)
+        
+        # Шаг 2
+        binary = bin(step1)[2:]
+        
+        # Шаг 3
+        sum_digits = sum(int(d) for d in binary)
+        binary += str(sum_digits % 2)
+        
+        sum_digits = sum(int(d) for d in binary)
+        binary += str(sum_digits % 2)
+        
+        return int(binary, 2)
+    
+    max_n = 0
+    for n in range(1, 1000):
+        r = process(n)
+        if r < 64:
+            if n > max_n:
+                max_n = n
+    return max_n
+
+# ================== ЗАДАНИЕ 12 ==================
+def task12():
+    """Наибольшее N, дающее R < 47"""
+    def process(n):
+        # Шаг 1
+        step1 = n - (n % 4)
+        
+        # Шаг 2
+        binary = bin(step1)[2:]
+        
+        # Шаг 3
+        sum_digits = sum(int(d) for d in binary)
+        binary += str(sum_digits % 2)
+        
+        sum_digits = sum(int(d) for d in binary)
+        binary += str(sum_digits % 2)
+        
+        return int(binary, 2)
+    
+    max_n = 0
+    for n in range(1, 1000):
+        r = process(n)
+        if r < 47:
+            if n > max_n:
+                max_n = n
+    return max_n
+
+# ================== ЗАДАНИЕ 13 ==================
+def task13():
+    """Минимальное R > 90, которое может быть результатом"""
+    def process(n):
+        # Шаг 1
+        step1 = n - (n % 8) + (n % 2)
+        
+        # Шаг 2
+        binary = bin(step1)[2:]
+        
+        # Шаг 3
+        sum_digits = sum(int(d) for d in binary)
+        binary += str(sum_digits % 2)
+        
+        sum_digits = sum(int(d) for d in binary)
+        binary += str(sum_digits % 2)
+        
+        return int(binary, 2)
+    
+    min_r = float('inf')
+    for n in range(1, 1000):
+        r = process(n)
+        if r > 90 and r < min_r:
+            min_r = r
+    return min_r
+
+# ================== ЗАДАНИЕ 14 ==================
+def task14():
+    """Минимальное R > 97, которое может быть результатом"""
+    def process(n):
+        # Шаг 1
+        step1 = n - (n % 8) + (n % 2)
+        
+        # Шаг 2
+        binary = bin(step1)[2:]
+        
+        # Шаг 3
+        sum_digits = sum(int(d) for d in binary)
+        binary += str(sum_digits % 2)
+        
+        sum_digits = sum(int(d) for d in binary)
+        binary += str(sum_digits % 2)
+        
+        return int(binary, 2)
+    
+    min_r = float('inf')
+    for n in range(1, 1000):
+        r = process(n)
+        if r > 97 and r < min_r:
+            min_r = r
+    return min_r
+
+# ================== ЗАДАНИЕ 18 ==================
+def task18():
+    """Максимальное нечётное R < 256"""
+    def process(n):
+        binary_n = bin(n)[2:]
+        result_binary = ''
+        
+        for digit in binary_n:
+            if digit == '0':
+                result_binary += '01'
+            else:  # digit == '1'
+                result_binary += '10'
+        
+        return int(result_binary, 2)
+    
+    max_r = 0
+    for n in range(1, 1000):
+        r = process(n)
+        if r < 256 and r % 2 == 1:
+            if r > max_r:
+                max_r = r
+    return max_r
+
+# ================== ЗАДАНИЕ 19 ==================
+def task19():
+    """Максимальное R < 100"""
+    def process(n):
+        binary = bin(n)[2:]
+        
+        remainder = n % 4
+        if remainder == 0:
+            binary += '00'
+        elif remainder == 1:
+            binary += '01'
+        elif remainder == 2:
+            binary += '10'
+        else:  # remainder == 3
+            binary += '11'
+        
+        return int(binary, 2)
+    
+    max_r = 0
+    for n in range(1, 1000):
+        r = process(n)
+        if r < 100 and r > max_r:
+            max_r = r
+    return max_r
+
+# ================== ЗАДАНИЕ 20 ==================
+def task20():
+    """Максимальное R < 111"""
+    def process(n):
+        binary = bin(n)[2:]
+        
+        remainder = n % 4
+        if remainder == 0:
+            binary += '00'
+        elif remainder == 1:
+            binary += '01'
+        elif remainder == 2:
+            binary += '10'
+        else:  # remainder == 3
+            binary += '11'
+        
+        return int(binary, 2)
+    
+    max_r = 0
+    for n in range(1, 1000):
+        r = process(n)
+        if r < 111 and r > max_r:
+            max_r = r
+    return max_r
+
+# ================== ОСНОВНАЯ ПРОГРАММА ==================
+def main():
+    print("Решение всех задач:")
+    print("=" * 50)
+    
+    print(f"Задание 2: {task2()}")
+    print(f"Задание 3: {task3()}")
+    print(f"Задание 4: {task4()}")
+    print(f"Задание 5: {task5()}")
+    print(f"Задание 6: {task6()}")
+    print(f"Задание 7: {task7()}")
+    print(f"Задание 8: {task8()}")
+    print(f"Задание 11: {task11()}")
+    print(f"Задание 12: {task12()}")
+    print(f"Задание 13: {task13()}")
+    print(f"Задание 14: {task14()}")
+    print(f"Задание 18: {task18()}")
+    print(f"Задание 19: {task19()}")
+    print(f"Задание 20: {task20()}")
+
+if __name__ == "__main__":
+    main()
