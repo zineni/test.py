@@ -1,0 +1,325 @@
+def task7():
+    """
+    Найти такое N, чтобы результат R > 120.
+    """
+    def process(N):
+        binary = bin(N)[2:]
+        ones_count = binary.count('1')
+        
+        if ones_count % 2 == 0:  # четная сумма цифр
+            binary += '10'
+            if len(binary) >= 3:
+                binary = '110' + binary[3:]
+            else:
+                binary = '110' + binary
+        else:  # нечетная сумма цифр
+            binary += '101'
+            if len(binary) >= 2:
+                binary = '10' + binary[2:]
+            else:
+                binary = '10' + binary
+        
+        return int(binary, 2)
+    
+    for N in range(1, 1000):  # увеличим диапазон поиска
+        R = process(N)
+        if R > 120:
+            return N
+    return None
+
+def task8():
+    """
+    Максимальное N, чтобы результат R < 150.
+    """
+    def process(N):
+        binary = bin(N)[2:]
+        
+        if N % 5 == 0:  # кратно 5
+            if len(binary) >= 2:
+                binary += binary[-2:]
+            else:
+                binary += binary  # если число из 1 цифры
+        else:  # не кратно 5
+            remainder = (N % 5) * 2
+            remainder_bin = bin(remainder)[2:]
+            binary += remainder_bin
+        
+        return int(binary, 2)
+    
+    for N in range(1000, 0, -1):  # ищем от большего к меньшему
+        R = process(N)
+        if R < 150:
+            return N
+    return None
+
+def task9():
+    """
+    Максимальное N, чтобы результат < 102.
+    """
+    def process(N):
+        binary = bin(N)[2:]
+        if N % 2 == 0:
+            binary += '00'
+        else:
+            binary += '11'
+        return int(binary, 2)
+    
+    for N in range(1000, 0, -1):
+        R = process(N)
+        if R < 102:
+            return N
+    return None
+
+def task10():
+    """
+    Минимальное N, чтобы результат > 130.
+    """
+    def process(N):
+        binary = bin(N)[2:]
+        if N % 2 == 0:
+            binary += '00'
+        else:
+            binary += '10'
+        return int(binary, 2)
+    
+    for N in range(1, 1000):
+        R = process(N)
+        if R > 130:
+            return N
+    return None
+
+def task11():
+    """
+    Наименьшее N, чтобы результат > 214.
+    """
+    def process(N):
+        binary = bin(N)[2:]
+        if N % 2 == 0:
+            binary += '01'
+        else:
+            binary = '1' + binary + '10'
+        return int(binary, 2)
+    
+    for N in range(1, 1000):
+        R = process(N)
+        if R > 214:
+            return N
+    return None
+
+def task12():
+    """
+    Наибольшее N, чтобы результат < 105.
+    """
+    def process(N):
+        binary = bin(N)[2:]
+        if N % 2 == 0:
+            binary += '01'
+        else:
+            binary = '1' + binary + '10'
+        return int(binary, 2)
+    
+    for N in range(1000, 0, -1):
+        R = process(N)
+        if R < 105:
+            return N
+    return None
+
+def task13():
+    """
+    Наибольшее число (4-значное), чтобы результат был 127.
+    """
+    def process(num):
+        digits = [int(d) for d in str(num)]
+        sums = [digits[0] + digits[1], digits[1] + digits[2], digits[2] + digits[3]]
+        max_sum = max(sums)
+        sums.remove(max_sum)
+        sums.sort(reverse=True)
+        result = int(''.join(map(str, sums)))
+        return result
+    
+    for num in range(9999, 999, -1):
+        if process(num) == 127:
+            return num
+    return None
+
+def task14():
+    """
+    Наименьшее число (4-значное), чтобы результат был 102.
+    """
+    def process(num):
+        digits = [int(d) for d in str(num)]
+        sums = [digits[0] + digits[1], digits[1] + digits[2], digits[2] + digits[3]]
+        max_sum = max(sums)
+        sums.remove(max_sum)
+        sums.sort(reverse=True)
+        result = int(''.join(map(str, sums)))
+        return result
+    
+    for num in range(1000, 10000):
+        if process(num) == 102:
+            return num
+    return None
+
+def task15():
+    """
+    Минимальное N, чтобы результат > 131 (дважды добавляем остаток).
+    """
+    def process(N):
+        binary = bin(N)[2:]
+        
+        # Первое добавление
+        ones_count = binary.count('1')
+        binary += str(ones_count % 2)
+        
+        # Второе добавление (на новой записи)
+        ones_count = binary.count('1')
+        binary += str(ones_count % 2)
+        
+        return int(binary, 2)
+    
+    for N in range(1, 1000):
+        R = process(N)
+        if R > 131:
+            return N
+    return None
+
+def task16():
+    """
+    Минимальное N, чтобы результат > 123 (дважды добавляем остаток).
+    """
+    def process(N):
+        binary = bin(N)[2:]
+        
+        # Первое добавление
+        ones_count = binary.count('1')
+        binary += str(ones_count % 2)
+        
+        # Второе добавление (на новой записи)
+        ones_count = binary.count('1')
+        binary += str(ones_count % 2)
+        
+        return int(binary, 2)
+    
+    for N in range(1, 1000):
+        R = process(N)
+        if R > 123:
+            return N
+    return None
+
+def task17():
+    """
+    Наименьшее N, чтобы результат > 99 (дважды добавляем остаток).
+    """
+    def process(N):
+        binary = bin(N)[2:]
+        
+        # Первое добавление
+        ones_count = binary.count('1')
+        binary += str(ones_count % 2)
+        
+        # Второе добавление (на новой записи)
+        ones_count = binary.count('1')
+        binary += str(ones_count % 2)
+        
+        return int(binary, 2)
+    
+    for N in range(1, 1000):
+        R = process(N)
+        if R > 99:
+            return N
+    return None
+
+def task18():
+    """
+    Минимальное R > 45, которое может быть результатом алгоритма.
+    """
+    def process(N):
+        binary = bin(N)[2:]
+        
+        # Первое добавление
+        ones_count = binary.count('1')
+        binary += str(ones_count % 2)
+        
+        # Второе добавление (на новой записи)
+        ones_count = binary.count('1')
+        binary += str(ones_count % 2)
+        
+        return int(binary, 2)
+    
+    results = []
+    for N in range(1, 1000):
+        R = process(N)
+        if R > 45:
+            results.append(R)
+    
+    return min(results) if results else None
+
+def task19():
+    """
+    Максимальное R ≤ 57, которое может быть результатом алгоритма.
+    """
+    def process(N):
+        binary = bin(N)[2:]
+        
+        # Первое добавление
+        ones_count = binary.count('1')
+        binary += str(ones_count % 2)
+        
+        # Второе добавление (на новой записи)
+        ones_count = binary.count('1')
+        binary += str(ones_count % 2)
+        
+        return int(binary, 2)
+    
+    results = []
+    for N in range(1, 1000):
+        R = process(N)
+        if R <= 57:
+            results.append(R)
+    
+    return max(results) if results else None
+
+def task20():
+    """
+    Максимальное R ≤ 71, которое может быть результатом алгоритма.
+    """
+    def process(N):
+        binary = bin(N)[2:]
+        
+        # Первое добавление
+        ones_count = binary.count('1')
+        binary += str(ones_count % 2)
+        
+        # Второе добавление (на новой записи)
+        ones_count = binary.count('1')
+        binary += str(ones_count % 2)
+        
+        return int(binary, 2)
+    
+    results = []
+    for N in range(1, 1000):
+        R = process(N)
+        if R <= 71:
+            results.append(R)
+    
+    return max(results) if results else None
+
+def main():
+    print("Результаты задач:")
+    print(f"Задание 7: {task7()}")
+    print(f"Задание 8: {task8()}")
+    print(f"Задание 9: {task9()}")
+    print(f"Задание 10: {task10()}")
+    print(f"Задание 11: {task11()}")
+    print(f"Задание 12: {task12()}")
+    print(f"Задание 13: {task13()}")
+    print(f"Задание 14: {task14()}")
+    print(f"Задание 15: {task15()}")
+    print(f"Задание 16: {task16()}")
+    print(f"Задание 17: {task17()}")
+    print(f"Задание 18: {task18()}")
+    print(f"Задание 19: {task19()}")
+    print(f"Задание 20: {task20()}")
+
+if __name__ == "__main__":
+    main()
