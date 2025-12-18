@@ -1,0 +1,612 @@
+# ==============================
+# УНИВЕРСАЛЬНЫЙ РЕШАТЕЛЬ 79 ЗАДАЧ
+# ==============================
+
+import itertools
+
+# =====================
+# ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+# =====================
+
+def is_vowel_ru(letter, task_alphabet):
+    """Определяет, является ли буква гласной в русском алфавите"""
+    vowels = 'АЕЁИОУЫЭЮЯ'
+    return letter in vowels
+
+def is_consonant_ru(letter, task_alphabet):
+    """Определяет, является ли буква согласной в русском алфавите"""
+    consonants = 'БВГДЖЗЙКЛМНПРСТФХЦЧШЩ'
+    return letter in consonants
+
+def count_words(alphabet, length, condition_func=None):
+    """Подсчет слов перебором"""
+    count = 0
+    
+    # Рекурсивная генерация
+    def backtrack(current):
+        nonlocal count
+        if len(current) == length:
+            if condition_func is None or condition_func(''.join(current)):
+                count += 1
+            return
+        
+        for letter in alphabet:
+            current.append(letter)
+            backtrack(current)
+            current.pop()
+    
+    backtrack([])
+    return count
+
+def count_words_with_counts(alphabet, length, exact_counts=None, min_counts=None, max_counts=None):
+    """Подсчет слов с ограничениями на количество букв"""
+    def condition(word):
+        if exact_counts:
+            for letter, cnt in exact_counts.items():
+                if word.count(letter) != cnt:
+                    return False
+        if min_counts:
+            for letter, cnt in min_counts.items():
+                if word.count(letter) < cnt:
+                    return False
+        if max_counts:
+            for letter, cnt in max_counts.items():
+                if word.count(letter) > cnt:
+                    return False
+        return True
+    
+    return count_words(alphabet, length, condition)
+
+# =====================
+# РЕШЕНИЕ ВСЕХ 79 ЗАДАЧ
+# =====================
+
+def task1():
+    """Задача 1: Слова длины 5 из букв Е, Г, Э, начинающиеся с гласной"""
+    alphabet = ['Е', 'Г', 'Э']
+    
+    def condition(word):
+        return word[0] in ['Е', 'Э']
+    
+    return count_words(alphabet, 5, condition)
+
+def task2():
+    """Задача 2: Слова длины 6 из букв Г, О, Д, начинающиеся с согласной"""
+    alphabet = ['Г', 'О', 'Д']
+    
+    def condition(word):
+        return word[0] == 'Г' or word[0] == 'Д'
+    
+    return count_words(alphabet, 6, condition)
+
+def task3():
+    """Задача 3: Слова длины 5 из букв З, И, М, А, начинающиеся с согласной и заканчивающиеся гласной"""
+    alphabet = ['З', 'И', 'М', 'А']
+    
+    def condition(word):
+        return word[0] in ['З', 'М'] and word[-1] in ['И', 'А']
+    
+    return count_words(alphabet, 5, condition)
+
+def task4():
+    """Задача 4: Слова из букв С, Л, О, Н, где С встречается ровно 1 раз"""
+    alphabet = ['С', 'Л', 'О', 'Н']
+    return count_words_with_counts(alphabet, 5, exact_counts={'С': 1})
+
+def task5():
+    """Задача 5: Слова длины 6 из букв Г, О, Д, начинающиеся и заканчивающиеся согласной"""
+    alphabet = ['Г', 'О', 'Д']
+    
+    def condition(word):
+        consonants = ['Г', 'Д']
+        return word[0] in consonants and word[-1] in consonants
+    
+    return count_words(alphabet, 6, condition)
+
+def task6():
+    """Задача 6: Слова длины 4 из букв М, Е, Т, Р, О, начинающиеся с согласной и заканчивающиеся гласной"""
+    alphabet = ['М', 'Е', 'Т', 'Р', 'О']
+    
+    def condition(word):
+        consonants = ['М', 'Т', 'Р']
+        vowels = ['Е', 'О']
+        return word[0] in consonants and word[-1] in vowels
+    
+    return count_words(alphabet, 4, condition)
+
+def task7():
+    """Задача 7: Слова из букв П, И, Р, где П встречается ровно 1 раз"""
+    alphabet = ['П', 'И', 'Р']
+    return count_words_with_counts(alphabet, 5, exact_counts={'П': 1})
+
+def task8():
+    """Задача 8: Слова из букв А, В, С, Х, где Х может быть только на первом месте или отсутствовать"""
+    alphabet = ['А', 'В', 'С', 'Х']
+    
+    def condition(word):
+        # Х либо на первом месте, либо отсутствует
+        if 'Х' in word and word.index('Х') != 0:
+            return False
+        return True
+    
+    return count_words(alphabet, 5, condition)
+
+def task9():
+    """Задача 9: Слова из букв А, В, С, Х, где Х встречается ровно 1 раз"""
+    alphabet = ['А', 'В', 'С', 'Х']
+    return count_words_with_counts(alphabet, 5, exact_counts={'Х': 1})
+
+def task10():
+    """Задача 10: Последовательности длины 5 из алфавита (У, Ч, Е, Н, И, К), начинающиеся с У и заканчивающиеся К"""
+    alphabet = ['У', 'Ч', 'Е', 'Н', 'И', 'К']
+    
+    def condition(word):
+        return word[0] == 'У' and word[-1] == 'К'
+    
+    return count_words(alphabet, 5, condition)
+
+def task11():
+    """Задача 11: Последовательности длины 6 из алфавита (К, А, Т, Е, Р), начинающиеся с Р и заканчивающиеся К"""
+    alphabet = ['К', 'А', 'Т', 'Е', 'Р']
+    
+    def condition(word):
+        return word[0] == 'Р' and word[-1] == 'К'
+    
+    return count_words(alphabet, 6, condition)
+
+def task12():
+    """Задача 12: Слова из букв А, В, С, Х, где Х может быть только на последнем месте или отсутствовать"""
+    alphabet = ['А', 'В', 'С', 'Х']
+    
+    def condition(word):
+        # Х либо на последнем месте, либо отсутствует
+        if 'Х' in word:
+            # Находим все позиции Х
+            for i, letter in enumerate(word):
+                if letter == 'Х' and i != len(word) - 1:
+                    return False
+        return True
+    
+    return count_words(alphabet, 5, condition)
+
+def task13():
+    """Задача 13: Слова из букв А, В, С, Д, Х, где Х встречается ровно 1 раз"""
+    alphabet = ['А', 'В', 'С', 'Д', 'Х']
+    return count_words_with_counts(alphabet, 4, exact_counts={'Х': 1})
+
+def task14():
+    """Задача 14: Слова из букв А, В, С, Д, Х, где Х может быть только на первом месте или отсутствовать"""
+    alphabet = ['А', 'В', 'С', 'Д', 'Х']
+    
+    def condition(word):
+        # Х либо на первом месте, либо отсутствует
+        if 'Х' in word and word.index('Х') != 0:
+            return False
+        return True
+    
+    return count_words(alphabet, 4, condition)
+
+def task15():
+    """Задача 15: Слова из букв А, В, С, Х, где Х встречается ровно 1 раз"""
+    alphabet = ['А', 'В', 'С', 'Х']
+    return count_words_with_counts(alphabet, 5, exact_counts={'Х': 1})
+
+def task16():
+    """Задача 16: Слова из букв А, В, С, D, Е, Г, Х, где Х встречается ровно 1 раз"""
+    alphabet = ['А', 'В', 'С', 'D', 'Е', 'Г', 'Х']
+    return count_words_with_counts(alphabet, 4, exact_counts={'Х': 1})
+
+def task17():
+    """Задача 17: Слова из букв А, В, С, D, Е, Х, где Х встречается ровно 1 раз"""
+    alphabet = ['А', 'В', 'С', 'D', 'Е', 'Х']
+    return count_words_with_counts(alphabet, 4, exact_counts={'Х': 1})
+
+def task18():
+    """Задача 18: Слова из букв Б, Р, О, Н, Х, И, где Х встречается ровно 1 раз"""
+    alphabet = ['Б', 'Р', 'О', 'Н', 'Х', 'И']
+    return count_words_with_counts(alphabet, 4, exact_counts={'Х': 1})
+
+def task19():
+    """Задача 19: Слова из букв А, Б, В, Г, где А встречается ровно 1 раз"""
+    alphabet = ['А', 'Б', 'В', 'Г']
+    return count_words_with_counts(alphabet, 5, exact_counts={'А': 1})
+
+def task20():
+    """Задача 20: Слова из букв Ж, И, Р, А, Ф, где Р встречается ровно 1 раз"""
+    alphabet = ['Ж', 'И', 'Р', 'А', 'Ф']
+    return count_words_with_counts(alphabet, 4, exact_counts={'Р': 1})
+
+def task21():
+    """Задача 21: Слова из букв А, В, С, Д, Х, У, Z, где первая буква - Х, У или Z, и далее эти буквы не встречаются"""
+    alphabet = ['А', 'В', 'С', 'Д', 'Х', 'У', 'Z']
+    
+    def condition(word):
+        if word[0] not in ['Х', 'У', 'Z']:
+            return False
+        
+        # Проверяем, что после первой позиции нет Х, У, Z
+        for i in range(1, len(word)):
+            if word[i] in ['Х', 'У', 'Z']:
+                return False
+        
+        return True
+    
+    return count_words(alphabet, 4, condition)
+
+def task22():
+    """Задача 22: Слова из букв А, В, С, Д, Х, Ч, где первая буква - Х или Х(?), и далее эти буквы не встречаются"""
+    # Предположим, что опечатка и имеется в виду Х и Ч
+    alphabet = ['А', 'В', 'С', 'Д', 'Х', 'Ч']
+    
+    def condition(word):
+        if word[0] not in ['Х', 'Ч']:
+            return False
+        
+        # Проверяем, что после первой позиции нет Х и Ч
+        for i in range(1, len(word)):
+            if word[i] in ['Х', 'Ч']:
+                return False
+        
+        return True
+    
+    return count_words(alphabet, 4, condition)
+
+def task23():
+    """Задача 23: Слова из букв А, В, С, Х, где Х встречается ровно 1 раз на 1, 2 или последней позиции"""
+    alphabet = ['А', 'В', 'С', 'Х']
+    
+    def condition(word):
+        if word.count('Х') != 1:
+            return False
+        
+        pos = word.index('Х')
+        return pos == 0 or pos == 1 or pos == 4
+    
+    return count_words(alphabet, 5, condition)
+
+def task24():
+    """Задача 24: Слова из букв А, В, Х, где Х встречается ровно 1 раз"""
+    alphabet = ['А', 'В', 'Х']
+    return count_words_with_counts(alphabet, 6, exact_counts={'Х': 1})
+
+def task25():
+    """Задача 25: Все пятибуквенные слова из алфавита (А, В, С, D, E, F), не начинающиеся с F и не заканчивающиеся на А"""
+    alphabet = ['А', 'В', 'С', 'D', 'E', 'F']
+    
+    def condition(word):
+        return word[0] != 'F' and word[-1] != 'А'
+    
+    return count_words(alphabet, 5, condition)
+
+def task26():
+    """Задача 26: Все пятибуквенные слова из алфавита (А, В, С, D, E), не начинающиеся с Е и не заканчивающиеся на А"""
+    alphabet = ['А', 'В', 'С', 'D', 'E']
+    
+    def condition(word):
+        return word[0] != 'Е' and word[-1] != 'А'
+    
+    return count_words(alphabet, 5, condition)
+
+def task27():
+    """Задача 27: Слова из букв А, В, С, Х, где Х может быть только на последнем месте или отсутствовать"""
+    alphabet = ['А', 'В', 'С', 'Х']
+    
+    def condition(word):
+        # Х либо на последнем месте, либо отсутствует
+        if 'Х' in word and word[-1] != 'Х':
+            return False
+        return True
+    
+    return count_words(alphabet, 5, condition)
+
+def task28():
+    """Задача 28: Слова из букв А, В, С, D, Е, Х, где Х встречается ровно 1 раз на первом или последнем месте"""
+    alphabet = ['А', 'В', 'С', 'D', 'Е', 'Х']
+    
+    def condition(word):
+        if word.count('Х') != 1:
+            return False
+        
+        pos = word.index('Х')
+        return pos == 0 or pos == 3
+    
+    return count_words(alphabet, 4, condition)
+
+def task29():
+    """Задача 29: Слова из букв А, В, С, D, Е, Х, Z, где Х и Z только на первых двух позициях, А-Е на последних двух"""
+    alphabet = ['А', 'В', 'С', 'D', 'Е', 'Х', 'Z']
+    
+    def condition(word):
+        # Первые две позиции: только Х и Z
+        if word[0] not in ['Х', 'Z'] or word[1] not in ['Х', 'Z']:
+            return False
+        
+        # Последние две позиции: только А, В, С, D, Е
+        if word[2] not in ['А', 'В', 'С', 'D', 'Е'] or word[3] not in ['А', 'В', 'С', 'D', 'Е']:
+            return False
+        
+        return True
+    
+    return count_words(alphabet, 4, condition)
+
+def task30():
+    """Задача 30: Слова из букв А, В, С, D, X, Y, Z, где X,Y,Z только на первых двух позициях, А-D на последних двух"""
+    alphabet = ['А', 'В', 'С', 'D', 'X', 'Y', 'Z']
+    
+    def condition(word):
+        # Первые две позиции: только X, Y, Z
+        if word[0] not in ['X', 'Y', 'Z'] or word[1] not in ['X', 'Y', 'Z']:
+            return False
+        
+        # Последние две позиции: только А, В, С, D
+        if word[2] not in ['А', 'В', 'С', 'D'] or word[3] not in ['А', 'В', 'С', 'D']:
+            return False
+        
+        return True
+    
+    return count_words(alphabet, 4, condition)
+
+def task31():
+    """Задача 31: Слова из букв З, И, М, А, где ровно одна гласная и она встречается ровно 1 раз"""
+    alphabet = ['З', 'И', 'М', 'А']
+    
+    def condition(word):
+        vowels = ['И', 'А']
+        vowel_count = sum(1 for letter in word if letter in vowels)
+        return vowel_count == 1
+    
+    return count_words(alphabet, 5, condition)
+
+def task32():
+    """Задача 32: 5-буквенные коды из букв А, Б, В, Г, Д, не начинающиеся с гласной и без двух одинаковых подряд"""
+    alphabet = ['А', 'Б', 'В', 'Г', 'Д']
+    
+    def condition(word):
+        # Не начинается с гласной
+        if word[0] in ['А']:
+            return False
+        
+        # Нет двух одинаковых подряд
+        for i in range(len(word)-1):
+            if word[i] == word[i+1]:
+                return False
+        
+        return True
+    
+    return count_words(alphabet, 5, condition)
+
+def task33():
+    """Задача 33: 6-буквенные коды из букв А, Б, В, Г, не начинающиеся с гласной и без двух одинаковых подряд"""
+    alphabet = ['А', 'Б', 'В', 'Г']
+    
+    def condition(word):
+        # Не начинается с гласной
+        if word[0] in ['А']:
+            return False
+        
+        # Нет двух одинаковых подряд
+        for i in range(len(word)-1):
+            if word[i] == word[i+1]:
+                return False
+        
+        return True
+    
+    return count_words(alphabet, 6, condition)
+
+def task34():
+    """Задача 34: Перестановки букв Л, Е, В, И, Й, не начинающиеся с Й и без сочетания ЕИ"""
+    letters = ['Л', 'Е', 'В', 'И', 'Й']
+    count = 0
+    
+    for perm in itertools.permutations(letters):
+        word = ''.join(perm)
+        if word[0] != 'Й' and 'ЕИ' not in word:
+            count += 1
+    
+    return count
+
+def task35():
+    """Задача 35: Перестановки букв М, А, Т, В, Е, Й, не начинающиеся с Й и без сочетания АЕ"""
+    letters = ['М', 'А', 'Т', 'В', 'Е', 'Й']
+    count = 0
+    
+    for perm in itertools.permutations(letters):
+        word = ''.join(perm)
+        if word[0] != 'Й' and 'АЕ' not in word:
+            count += 1
+    
+    return count
+
+def task36():
+    """Задача 36: Перестановки букв Г, Г, Р, А, С, И, М с чередованием гласных и согласных"""
+    # Буквы: Г(2), Р, А, С, И, М
+    # Гласные: А, И
+    # Согласные: Г, Г, Р, С, М
+    letters = ['Г', 'Г', 'Р', 'А', 'С', 'И', 'М']
+    vowels = ['А', 'И']
+    consonants = ['Г', 'Р', 'С', 'М']
+    
+    count = 0
+    seen = set()
+    
+    for perm in itertools.permutations(letters):
+        word = ''.join(perm)
+        
+        if word in seen:
+            continue
+        seen.add(word)
+        
+        # Проверяем чередование
+        valid = True
+        for i in range(len(word)-1):
+            current_vowel = word[i] in vowels
+            next_vowel = word[i+1] in vowels
+            if current_vowel == next_vowel:  # две гласные или две согласные подряд
+                valid = False
+                break
+        
+        if valid:
+            count += 1
+    
+    return count
+
+def task37():
+    """Задача 37: Перестановки букв П, О, Л, И, Н, А с чередованием гласных и согласных"""
+    letters = ['П', 'О', 'Л', 'И', 'Н', 'А']
+    vowels = ['О', 'И', 'А']
+    consonants = ['П', 'Л', 'Н']
+    
+    count = 0
+    
+    for perm in itertools.permutations(letters):
+        word = ''.join(perm)
+        
+        # Проверяем чередование
+        valid = True
+        for i in range(len(word)-1):
+            current_vowel = word[i] in vowels
+            next_vowel = word[i+1] in vowels
+            if current_vowel == next_vowel:
+                valid = False
+                break
+        
+        if valid:
+            count += 1
+    
+    return count
+
+def task38():
+    """Задача 38: Слова длины 6 из букв К, О, Т, где Т встречается ровно 1 раз"""
+    alphabet = ['К', 'О', 'Т']
+    return count_words_with_counts(alphabet, 6, exact_counts={'Т': 1})
+
+def task39():
+    """Задача 39: Перестановки букв О, Л, В, Г, А, где В не первая и не после гласной"""
+    letters = ['О', 'Л', 'В', 'Г', 'А']
+    vowels = ['О', 'А']
+    
+    count = 0
+    
+    for perm in itertools.permutations(letters):
+        word = ''.join(perm)
+        
+        if word[0] == 'В':
+            continue
+        
+        # Проверяем, что В не после гласной
+        valid = True
+        for i in range(len(word)-1):
+            if word[i] in vowels and word[i+1] == 'В':
+                valid = False
+                break
+        
+        if valid:
+            count += 1
+    
+    return count
+
+def task40():
+    """Задача 40: Слова длины 5 из букв И, В, А, Н, где И используется хотя бы 1 раз"""
+    alphabet = ['И', 'В', 'А', 'Н']
+    
+    def condition(word):
+        return 'И' in word
+    
+    return count_words(alphabet, 5, condition)
+
+def task41():
+    """Задача 41: Слова длины 5 из букв С, В, Е, Т, А, где С используется хотя бы 1 раз"""
+    alphabet = ['С', 'В', 'Е', 'Т', 'А']
+    
+    def condition(word):
+        return 'С' in word
+    
+    return count_words(alphabet, 5, condition)
+
+def task42():
+    """Задача 42: Слова длины 5 из букв П, Р, А, В, О, где П встречается ровно 1 раз"""
+    alphabet = ['П', 'Р', 'А', 'В', 'О']
+    return count_words_with_counts(alphabet, 5, exact_counts={'П': 1})
+
+def task43():
+    """Задача 43: Слова длины 3 из букв Р, У, Ч, К, А, где К встречается ровно 1 раз"""
+    alphabet = ['Р', 'У', 'Ч', 'К', 'А']
+    return count_words_with_counts(alphabet, 3, exact_counts={'К': 1})
+
+def task44():
+    """Задача 44: Слова длины 5 из букв В, О, Л, К, где В встречается ровно 1 раз"""
+    alphabet = ['В', 'О', 'Л', 'К']
+    return count_words_with_counts(alphabet, 5, exact_counts={'В': 1})
+
+def task45():
+    """Задача 45: Слова длины 4 из букв Б, Е, Л, К, А, где Б встречается ровно 1 раз"""
+    alphabet = ['Б', 'Е', 'Л', 'К', 'А']
+    return count_words_with_counts(alphabet, 4, exact_counts={'Б': 1})
+
+def task46():
+    """Задача 46: Пятизначные восьмеричные числа с разными цифрами и чередованием четности"""
+    # Восьмеричные цифры: 0-7
+    count = 0
+    
+    # Генерируем все пятизначные числа (первая цифра не 0)
+    for a in range(1, 8):
+        for b in range(0, 8):
+            if b == a:
+                continue
+            for c in range(0, 8):
+                if c in [a, b]:
+                    continue
+                for d in range(0, 8):
+                    if d in [a, b, c]:
+                        continue
+                    for e in range(0, 8):
+                        if e in [a, b, c, d]:
+                            continue
+                        
+                        # Проверяем чередование четности
+                        digits = [a, b, c, d, e]
+                        valid = True
+                        for i in range(4):
+                            # Две четные или две нечетные подряд
+                            if (digits[i] % 2 == 0 and digits[i+1] % 2 == 0) or \
+                               (digits[i] % 2 == 1 and digits[i+1] % 2 == 1):
+                                valid = False
+                                break
+                        
+                        if valid:
+                            count += 1
+    
+    return count
+
+def task47():
+    """Задача 47: Шестизначные числа, делящиеся на 5, с разными цифрами и чередованием четности"""
+    count = 0
+    
+    # Генерируем шестизначные числа (первая цифра не 0)
+    # Число делится на 5, если последняя цифра 0 или 5
+    for last in [0, 5]:
+        for a in range(1, 10):
+            if a == last:
+                continue
+            for b in range(0, 10):
+                if b in [a, last]:
+                    continue
+                for c in range(0, 10):
+                    if c in [a, b, last]:
+                        continue
+                    for d in range(0, 10):
+                        if d in [a, b, c, last]:
+                            continue
+                        for e in range(0, 10):
+                            if e in [a, b, c, d, last]:
+                                continue
+                            
+                            digits = [a, b, c, d, e, last]
+                            # Все цифры разные
+                            if len(set(digits)) != 6:
+                                continue
+                            
+                            # Чередование четности
+                            valid = True
+                            for i in range(5):
+                                if (digits[i] % 2 == dig
