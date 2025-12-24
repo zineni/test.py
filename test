@@ -1,351 +1,515 @@
-# ================== ЗАДАНИЕ 2 ==================
-def task2():
-    """Максимальное N, дающее R <= 37"""
-    def process(n):
-        # Шаг 1
-        binary = bin(n)[2:]
-        
-        # Шаг 2
-        if n % 2 == 0:
-            binary += '0'
-        else:
-            binary += '1'
-        
-        # Шаг 3
-        ones_count = binary.count('1')
-        if ones_count % 3 == 0:
-            binary = '11' + binary[2:]
-        else:
-            binary = '10' + binary[2:]
-        
-        return int(binary, 2)
-    
-    max_n = 0
-    for n in range(1, 1000):
-        r = process(n)
-        if r <= 37:
-            if n > max_n:
-                max_n = n
-    return max_n
+print("=== Решение комбинаторных задач ===")
 
-# ================== ЗАДАНИЕ 3 ==================
-def task3():
-    """Минимальное N, дающее R >= 26"""
-    def process(n):
-        binary = bin(n)[2:]
-        
-        if len(binary) % 2 == 0:
-            mid = len(binary) // 2
-            binary = binary[:mid] + '1' + binary[mid:]
-        
-        return int(binary, 2)
+# 1. 14-ричные шестизначные числа
+def count_base14_numbers():
+    count = 0
+    # Чётные цифры в 14-ричной: 0,2,4,6,8,10,12 (но 0 не может быть первой)
+    # Цифры: 0-9,A,B,C,D где A=10,B=11,C=12,D=13
+    even_first = [2,4,6,8,10,12]  # чётные цифры для первой позиции (0 исключаем)
+    digits = list(range(14))
     
-    for n in range(1, 1000):
-        r = process(n)
-        if r >= 26:
-            return n
-    return None
+    for d1 in even_first:  # первая цифра - чётная
+        # Генерируем все шестизначные числа
+        for d2 in digits:
+            for d3 in digits:
+                for d4 in digits:
+                    for d5 in digits:
+                        for d6 in digits:
+                            num = [d1, d2, d3, d4, d5, d6]
+                            # Проверяем ровно три цифры 7
+                            if num.count(7) != 3:
+                                continue
+                            # Проверяем не более трёх цифр > 9 (A,B,C,D)
+                            count_big = sum(1 for d in num if d > 9)
+                            if count_big > 3:
+                                continue
+                            count += 1
+    return count
 
-# ================== ЗАДАНИЕ 4 ==================
-def task4():
-    """Максимальное N, дающее R <= 26"""
-    def process(n):
-        binary = bin(n)[2:]
-        
-        if len(binary) % 2 == 0:
-            mid = len(binary) // 2
-            binary = binary[:mid] + '11' + binary[mid:]
-        
-        return int(binary, 2)
+# 2. 12-ричные пятизначные числа с цифрой 'а' (в 12-ричной 'a'=10)
+def count_base12_numbers():
+    count = 0
+    digits = list(range(12))
+    odd_first = [1,3,5,7,9,11]  # нечётные для первой позиции
     
-    max_n = 0
-    for n in range(1, 1000):
-        r = process(n)
-        if r <= 26:
-            if n > max_n:
-                max_n = n
-    return max_n
+    for d1 in odd_first:
+        for d2 in digits:
+            for d3 in digits:
+                for d4 in digits:
+                    for d5 in digits:
+                        num = [d1, d2, d3, d4, d5]
+                        # Ровно две цифры 'a' (10)
+                        if num.count(10) != 2:
+                            continue
+                        # Не более трёх цифр < 4
+                        count_small = sum(1 for d in num if d < 4)
+                        if count_small > 3:
+                            continue
+                        count += 1
+    return count
 
-# ================== ЗАДАНИЕ 5 ==================
-def task5():
-    """Наибольшее трёхзначное число, дающее результат 9752"""
-    def process(num):
-        a, b, c = map(int, str(num))
-        sum1 = a*a + b*b
-        sum2 = b*b + c*c
-        if sum1 >= sum2:
-            return int(str(sum1) + str(sum2))
-        else:
-            return int(str(sum2) + str(sum1))
+# 3. Восьмеричные 4-значные числа
+def count_octal_numbers():
+    count = 0
+    for d1 in range(1, 8):  # первая цифра не 0
+        for d2 in range(8):
+            # Сумма соседних цифр нечётна
+            if (d1 + d2) % 2 == 0:
+                continue
+            for d3 in range(8):
+                if (d2 + d3) % 2 == 0:
+                    continue
+                for d4 in range(8):
+                    if (d3 + d4) % 2 == 0:
+                        continue
+                    
+                    # Преобразуем в двоичное
+                    decimal = d1*512 + d2*64 + d3*8 + d4
+                    binary = bin(decimal)[2:]
+                    
+                    # Проверяем нет трёх идущих подряд единиц
+                    if '111' in binary:
+                        continue
+                    
+                    count += 1
+    return count
+
+# 4. Семеричные 5-значные числа
+def count_base7_numbers():
+    count = 0
+    for d1 in range(1, 7):  # первая цифра не 0
+        for d2 in range(7):
+            if (d1 + d2) % 2 == 0:
+                continue
+            for d3 in range(7):
+                if (d2 + d3) % 2 == 0:
+                    continue
+                for d4 in range(7):
+                    if (d3 + d4) % 2 == 0:
+                        continue
+                    for d5 in range(7):
+                        if (d4 + d5) % 2 == 0:
+                            continue
+                        
+                        decimal = d1*2401 + d2*343 + d3*49 + d4*7 + d5
+                        binary = bin(decimal)[2:]
+                        
+                        # Не содержит трёх идущих подряд нулей
+                        if '000' in binary:
+                            continue
+                        
+                        count += 1
+    return count
+
+# 5. Слова из букв АБСЦИССА
+def count_words_abscissa():
+    letters = ['А', 'Б', 'С', 'Ц', 'И', 'С', 'С', 'А']
+    vowels = ['А', 'И']
+    consonants = ['Б', 'С', 'Ц']
+    count = 0
     
-    result = 9752
-    max_num = 0
-    for num in range(100, 1000):
-        if process(num) == result:
-            if num > max_num:
-                max_num = num
-    return max_num
+    # Все возможные комбинации из 6 букв
+    # Создаём все возможные позиции
+    for i1 in range(len(letters)):
+        for i2 in range(len(letters)):
+            for i3 in range(len(letters)):
+                for i4 in range(len(letters)):
+                    for i5 in range(len(letters)):
+                        for i6 in range(len(letters)):
+                            word = [letters[i1], letters[i2], letters[i3], 
+                                   letters[i4], letters[i5], letters[i6]]
+                            
+                            # Проверяем первую и последнюю позиции
+                            if word[0] in vowels or word[5] in vowels:
+                                continue
+                            
+                            # Проверяем средние позиции
+                            valid = True
+                            for pos in range(1, 5):  # позиции 1-4
+                                if word[pos] in vowels:
+                                    # Проверяем соседей
+                                    if (word[pos-1] in consonants and 
+                                        word[pos+1] in consonants):
+                                        valid = False
+                                        break
+                            
+                            if valid:
+                                count += 1
+    return count
 
-# ================== ЗАДАНИЕ 6 ==================
-def task6():
-    """Наибольшее трёхзначное число, дающее результат 7434"""
-    def process(num):
-        a, b, c = map(int, str(num))
-        sum1 = a*a + b*b
-        sum2 = b*b + c*c
-        if sum1 >= sum2:
-            return int(str(sum1) + str(sum2))
-        else:
-            return int(str(sum2) + str(sum1))
+# 6. Слова из букв БАГАЖ
+def count_words_bagazh():
+    letters = ['Б', 'А', 'Г', 'А', 'Ж']
+    vowels = ['А']
+    consonants = ['Б', 'Г', 'Ж']
+    count = 0
     
-    result = 7434
-    max_num = 0
-    for num in range(100, 1000):
-        if process(num) == result:
-            if num > max_num:
-                max_num = num
-    return max_num
+    for i1 in range(len(letters)):
+        for i2 in range(len(letters)):
+            for i3 in range(len(letters)):
+                for i4 in range(len(letters)):
+                    for i5 in range(len(letters)):
+                        for i6 in range(len(letters)):
+                            word = [letters[i1], letters[i2], letters[i3],
+                                   letters[i4], letters[i5], letters[i6]]
+                            
+                            if word[0] in vowels or word[5] in vowels:
+                                continue
+                            
+                            valid = True
+                            for pos in range(1, 5):
+                                if word[pos] in vowels:
+                                    if (word[pos-1] in consonants and 
+                                        word[pos+1] in consonants):
+                                        valid = False
+                                        break
+                            
+                            if valid:
+                                count += 1
+    return count
 
-# ================== ЗАДАНИЕ 7 ==================
-def task7():
-    """Наибольшее трёхзначное число, дающее результат 33621"""
-    def process(num):
-        a, b, c = map(int, str(num))
-        product = a * b * c
-        sum_digits = a + b + c
-        
-        if product >= sum_digits:
-            return int(str(product) + str(sum_digits))
-        else:
-            return int(str(sum_digits) + str(product))
+# 7. Перестановки слова КАЛИНКА
+def permutations_kalinka():
+    word = "КАЛИНКА"
+    # Буквы: К(2), А(2), Л, И, Н
+    # Используем перебор всех 7-значных чисел и проверяем частоты букв
+    count = 0
+    seen = set()
+    letters = ['К', 'А', 'Л', 'И', 'Н', 'К', 'А']
+    indices = list(range(7))
     
-    result = 33621
-    max_num = 0
-    for num in range(100, 1000):
-        if process(num) == result:
-            if num > max_num:
-                max_num = num
-    return max_num
+    # Генерируем все перестановки индексов
+    for i1 in indices:
+        for i2 in indices:
+            if i2 == i1:
+                continue
+            for i3 in indices:
+                if i3 in [i1, i2]:
+                    continue
+                for i4 in indices:
+                    if i4 in [i1, i2, i3]:
+                        continue
+                    for i5 in indices:
+                        if i5 in [i1, i2, i3, i4]:
+                            continue
+                        for i6 in indices:
+                            if i6 in [i1, i2, i3, i4, i5]:
+                                continue
+                            for i7 in indices:
+                                if i7 in [i1, i2, i3, i4, i5, i6]:
+                                    continue
+                                
+                                perm = (letters[i1], letters[i2], letters[i3],
+                                       letters[i4], letters[i5], letters[i6],
+                                       letters[i7])
+                                
+                                # Проверяем частоты
+                                if (perm.count('К') == 2 and 
+                                    perm.count('А') == 2 and
+                                    perm.count('Л') == 1 and
+                                    perm.count('И') == 1 and
+                                    perm.count('Н') == 1):
+                                    if perm not in seen:
+                                        seen.add(perm)
+                                        count += 1
+    return count
 
-# ================== ЗАДАНИЕ 8 ==================
-def task8():
-    """Наибольшее трёхзначное число, дающее результат 24019"""
-    def process(num):
-        a, b, c = map(int, str(num))
-        product = a * b * c
-        sum_digits = a + b + c
-        
-        if product >= sum_digits:
-            return int(str(product) + str(sum_digits))
-        else:
-            return int(str(sum_digits) + str(product))
+# 8. Перестановки слова ИДИЛЛИЯ
+def permutations_idilliya():
+    word = "ИДИЛЛИЯ"
+    # Буквы: И(3), Д(1), Л(2), Я(1)
+    count = 0
+    seen = set()
+    letters = ['И', 'Д', 'И', 'Л', 'Л', 'И', 'Я']
+    indices = list(range(7))
     
-    result = 24019
-    max_num = 0
-    for num in range(100, 1000):
-        if process(num) == result:
-            if num > max_num:
-                max_num = num
-    return max_num
+    for i1 in indices:
+        for i2 in indices:
+            if i2 == i1:
+                continue
+            for i3 in indices:
+                if i3 in [i1, i2]:
+                    continue
+                for i4 in indices:
+                    if i4 in [i1, i2, i3]:
+                        continue
+                    for i5 in indices:
+                        if i5 in [i1, i2, i3, i4]:
+                            continue
+                        for i6 in indices:
+                            if i6 in [i1, i2, i3, i4, i5]:
+                                continue
+                            for i7 in indices:
+                                if i7 in [i1, i2, i3, i4, i5, i6]:
+                                    continue
+                                
+                                perm = (letters[i1], letters[i2], letters[i3],
+                                       letters[i4], letters[i5], letters[i6],
+                                       letters[i7])
+                                
+                                if (perm.count('И') == 3 and 
+                                    perm.count('Д') == 1 and
+                                    perm.count('Л') == 2 and
+                                    perm.count('Я') == 1):
+                                    if perm not in seen:
+                                        seen.add(perm)
+                                        count += 1
+    return count
 
-# ================== ЗАДАНИЕ 11 ==================
-def task11():
-    """Наибольшее N, дающее R < 64"""
-    def process(n):
-        # Шаг 1
-        step1 = n - (n % 4)
-        
-        # Шаг 2
-        binary = bin(step1)[2:]
-        
-        # Шаг 3
-        sum_digits = sum(int(d) for d in binary)
-        binary += str(sum_digits % 2)
-        
-        sum_digits = sum(int(d) for d in binary)
-        binary += str(sum_digits % 2)
-        
-        return int(binary, 2)
+# 9. Семеричные шестизначные числа
+def count_base7_six_digit():
+    count = 0
+    # Не начинаются с нечётных: начинаются с чётных (0,2,4,6)
+    # Но первая цифра не 0, так как шестизначное
+    even_first = [2,4,6]
+    # Не оканчиваются чётными: оканчиваются нечётными (1,3,5)
+    odd_last = [1,3,5]
     
-    max_n = 0
-    for n in range(1, 1000):
-        r = process(n)
-        if r < 64:
-            if n > max_n:
-                max_n = n
-    return max_n
+    for d1 in even_first:
+        for d2 in range(7):
+            for d3 in range(7):
+                for d4 in range(7):
+                    for d5 in range(7):
+                        for d6 in odd_last:
+                            num = [d1, d2, d3, d4, d5, d6]
+                            # Не более одной цифры 5
+                            if num.count(5) > 1:
+                                continue
+                            count += 1
+    return count
 
-# ================== ЗАДАНИЕ 12 ==================
-def task12():
-    """Наибольшее N, дающее R < 47"""
-    def process(n):
-        # Шаг 1
-        step1 = n - (n % 4)
-        
-        # Шаг 2
-        binary = bin(step1)[2:]
-        
-        # Шаг 3
-        sum_digits = sum(int(d) for d in binary)
-        binary += str(sum_digits % 2)
-        
-        sum_digits = sum(int(d) for d in binary)
-        binary += str(sum_digits % 2)
-        
-        return int(binary, 2)
+# 10. Семеричные пятизначные числа с одной цифрой 4
+def count_base7_one_four():
+    count = 0
+    for d1 in range(1, 7):  # первая цифра не 0
+        for d2 in range(7):
+            for d3 in range(7):
+                for d4 in range(7):
+                    for d5 in range(7):
+                        num = [d1, d2, d3, d4, d5]
+                        # Ровно одна цифра 4
+                        if num.count(4) != 1:
+                            continue
+                        
+                        # Проверяем, что нечётные цифры не стоят рядом с 4
+                        valid = True
+                        for i in range(5):
+                            if num[i] == 4:
+                                # Проверяем левого соседа
+                                if i > 0 and num[i-1] % 2 == 1:  # нечётная
+                                    valid = False
+                                    break
+                                # Проверяем правого соседа
+                                if i < 4 and num[i+1] % 2 == 1:
+                                    valid = False
+                                    break
+                        
+                        if valid:
+                            count += 1
+    return count
+
+# 11. Шестизначные числа, оканчивающиеся на 34
+def count_numbers_ending_34():
+    digits = list(range(10))
+    count = 0
     
-    max_n = 0
-    for n in range(1, 1000):
-        r = process(n)
-        if r < 47:
-            if n > max_n:
-                max_n = n
-    return max_n
+    # Перебираем первые 4 цифры
+    for d1 in digits:
+        if d1 == 0:  # шестизначное число
+            continue
+        for d2 in digits:
+            for d3 in digits:
+                for d4 in digits:
+                    # Последние цифры фиксированы: 3 и 4
+                    num = [d1, d2, d3, d4, 3, 4]
+                    
+                    # Проверяем, что все цифры разные
+                    if len(set(num)) != 6:
+                        continue
+                    
+                    # Подсчитываем чётные и нечётные
+                    even_count = sum(1 for d in num if d % 2 == 0)
+                    odd_count = 6 - even_count
+                    
+                    # Проверяем условие: ровно три чётные ИЛИ ровно две нечётные
+                    if even_count == 3 or odd_count == 2:
+                        count += 1
+    return count
 
-# ================== ЗАДАНИЕ 13 ==================
-def task13():
-    """Минимальное R > 90, которое может быть результатом"""
-    def process(n):
-        # Шаг 1
-        step1 = n - (n % 8) + (n % 2)
-        
-        # Шаг 2
-        binary = bin(step1)[2:]
-        
-        # Шаг 3
-        sum_digits = sum(int(d) for d in binary)
-        binary += str(sum_digits % 2)
-        
-        sum_digits = sum(int(d) for d in binary)
-        binary += str(sum_digits % 2)
-        
-        return int(binary, 2)
+# 12. Шестизначные числа, оканчивающиеся на 26
+def count_numbers_ending_26():
+    digits = list(range(10))
+    count = 0
     
-    min_r = float('inf')
-    for n in range(1, 1000):
-        r = process(n)
-        if r > 90 and r < min_r:
-            min_r = r
-    return min_r
+    for d1 in digits:
+        if d1 == 0:
+            continue
+        for d2 in digits:
+            for d3 in digits:
+                for d4 in digits:
+                    num = [d1, d2, d3, d4, 2, 6]
+                    
+                    if len(set(num)) != 6:
+                        continue
+                    
+                    even_count = sum(1 for d in num if d % 2 == 0)
+                    odd_count = 6 - even_count
+                    
+                    if even_count == 3 or odd_count == 2:
+                        count += 1
+    return count
 
-# ================== ЗАДАНИЕ 14 ==================
-def task14():
-    """Минимальное R > 97, которое может быть результатом"""
-    def process(n):
-        # Шаг 1
-        step1 = n - (n % 8) + (n % 2)
-        
-        # Шаг 2
-        binary = bin(step1)[2:]
-        
-        # Шаг 3
-        sum_digits = sum(int(d) for d in binary)
-        binary += str(sum_digits % 2)
-        
-        sum_digits = sum(int(d) for d in binary)
-        binary += str(sum_digits % 2)
-        
-        return int(binary, 2)
+# 13. Слова из букв Е, К, О, Р (нахождение номера)
+def find_word_number():
+    # Алфавитный порядок: Е, К, О, Р (Е=0, К=1, О=2, Р=3)
+    # Ищем первое слово, начинающееся на О и без соседних Е
     
-    min_r = float('inf')
-    for n in range(1, 1000):
-        r = process(n)
-        if r > 97 and r < min_r:
-            min_r = r
-    return min_r
-
-# ================== ЗАДАНИЕ 18 ==================
-def task18():
-    """Максимальное нечётное R < 256"""
-    def process(n):
-        binary_n = bin(n)[2:]
-        result_binary = ''
-        
-        for digit in binary_n:
-            if digit == '0':
-                result_binary += '01'
-            else:  # digit == '1'
-                result_binary += '10'
-        
-        return int(result_binary, 2)
+    # Пронумеруем все слова
+    words = []
+    letters = ['Е', 'К', 'О', 'Р']
     
-    max_r = 0
-    for n in range(1, 1000):
-        r = process(n)
-        if r < 256 and r % 2 == 1:
-            if r > max_r:
-                max_r = r
-    return max_r
-
-# ================== ЗАДАНИЕ 19 ==================
-def task19():
-    """Максимальное R < 100"""
-    def process(n):
-        binary = bin(n)[2:]
-        
-        remainder = n % 4
-        if remainder == 0:
-            binary += '00'
-        elif remainder == 1:
-            binary += '01'
-        elif remainder == 2:
-            binary += '10'
-        else:  # remainder == 3
-            binary += '11'
-        
-        return int(binary, 2)
+    # Генерируем все слова
+    for i1 in range(4):
+        for i2 in range(4):
+            for i3 in range(4):
+                for i4 in range(4):
+                    for i5 in range(4):
+                        for i6 in range(4):
+                            word = (letters[i1], letters[i2], letters[i3],
+                                   letters[i4], letters[i5], letters[i6])
+                            words.append(word)
     
-    max_r = 0
-    for n in range(1, 1000):
-        r = process(n)
-        if r < 100 and r > max_r:
-            max_r = r
-    return max_r
-
-# ================== ЗАДАНИЕ 20 ==================
-def task20():
-    """Максимальное R < 111"""
-    def process(n):
-        binary = bin(n)[2:]
+    # Ищем нужное слово
+    for i, word in enumerate(words):
+        # Начинается на О
+        if word[0] != 'О':
+            continue
         
-        remainder = n % 4
-        if remainder == 0:
-            binary += '00'
-        elif remainder == 1:
-            binary += '01'
-        elif remainder == 2:
-            binary += '10'
-        else:  # remainder == 3
-            binary += '11'
+        # Проверяем, что буквы Е не стоят рядом
+        has_adjacent_e = False
+        for j in range(5):
+            if word[j] == 'Е' and word[j+1] == 'Е':
+                has_adjacent_e = True
+                break
         
-        return int(binary, 2)
+        if not has_adjacent_e:
+            return i + 1  # +1 потому что нумерация с 1
     
-    max_r = 0
-    for n in range(1, 1000):
-        r = process(n)
-        if r < 111 and r > max_r:
-            max_r = r
-    return max_r
+    return -1
 
-# ================== ОСНОВНАЯ ПРОГРАММА ==================
-def main():
-    print("Решение всех задач:")
-    print("=" * 50)
+# 14. Слова из букв Е, К, О, Р (начинается на К, Р не рядом)
+def find_word_number_k():
+    letters = ['Е', 'К', 'О', 'Р']
+    words = []
     
-    print(f"Задание 2: {task2()}")
-    print(f"Задание 3: {task3()}")
-    print(f"Задание 4: {task4()}")
-    print(f"Задание 5: {task5()}")
-    print(f"Задание 6: {task6()}")
-    print(f"Задание 7: {task7()}")
-    print(f"Задание 8: {task8()}")
-    print(f"Задание 11: {task11()}")
-    print(f"Задание 12: {task12()}")
-    print(f"Задание 13: {task13()}")
-    print(f"Задание 14: {task14()}")
-    print(f"Задание 18: {task18()}")
-    print(f"Задание 19: {task19()}")
-    print(f"Задание 20: {task20()}")
+    for i1 in range(4):
+        for i2 in range(4):
+            for i3 in range(4):
+                for i4 in range(4):
+                    for i5 in range(4):
+                        for i6 in range(4):
+                            word = (letters[i1], letters[i2], letters[i3],
+                                   letters[i4], letters[i5], letters[i6])
+                            words.append(word)
+    
+    for i, word in enumerate(words):
+        if word[0] != 'К':
+            continue
+        
+        # Проверяем, что буквы Р не стоят рядом
+        has_adjacent_r = False
+        for j in range(5):
+            if word[j] == 'Р' and word[j+1] == 'Р':
+                has_adjacent_r = True
+                break
+        
+        if not has_adjacent_r:
+            return i + 1
+    
+    return -1
 
-if __name__ == "__main__":
-    main()
+# 15. Пятибуквенные слова с буквой Г ровно 2 раза
+def count_words_with_g():
+    letters = ['А', 'Б', 'В', 'Г', 'Д', 'Е']
+    count = 0
+    
+    for i1 in range(6):
+        for i2 in range(6):
+            for i3 in range(6):
+                for i4 in range(6):
+                    for i5 in range(6):
+                        word = [letters[i1], letters[i2], letters[i3],
+                               letters[i4], letters[i5]]
+                        
+                        # Буква Г используется ровно 2 раза
+                        if word.count('Г') != 2:
+                            continue
+                        
+                        count += 1
+    return count
+
+# 16. Четырёхбуквенные слова с буквой О ровно 2 раза
+def count_words_with_o():
+    letters = ['Е', 'Д', 'О', 'Н', 'К']
+    count = 0
+    
+    for i1 in range(5):
+        for i2 in range(5):
+            for i3 in range(5):
+                for i4 in range(5):
+                    word = [letters[i1], letters[i2], letters[i3], letters[i4]]
+                    
+                    if word.count('О') != 2:
+                        continue
+                    
+                    count += 1
+    return count
+
+# 17. Пятибуквенные слова, оканчивающиеся на Е, с буквой А
+def count_words_ending_e():
+    letters = ['А', 'Б', 'В', 'Г', 'Д', 'Е']
+    count = 0
+    seen = set()
+    
+    for i1 in range(6):
+        for i2 in range(6):
+            for i3 in range(6):
+                for i4 in range(6):
+                    # Последняя буква фиксирована: Е
+                    word = [letters[i1], letters[i2], letters[i3],
+                           letters[i4], 'Е']
+                    
+                    # Должна содержать букву А
+                    if 'А' not in word:
+                        continue
+                    
+                    # Буквы через одну не должны совпадать
+                    valid = True
+                    if word[0] == word[2] or word[1] == word[3] or word[2] == word[4]:
+                        valid = False
+                    
+                    if valid:
+                        word_str = ''.join(word)
+                        if word_str not in seen:
+                            seen.add(word_str)
+                            count += 1
+    return count
+
+# Основная программа
+print("\n1. 14-ричные шестизначные числа:", count_base14_numbers())
+print("2. 12-ричные пятизначные числа:", count_base12_numbers())
+print("3. Восьмеричные 4-значные числа:", count_octal_numbers())
+print("4. Семеричные 5-значные числа:", count_base7_numbers())
+print("5. Слова из букв АБСЦИССА:", count_words_abscissa())
+print("6. Слова из букв БАГАЖ:", count_words_bagazh())
+print("7. Перестановки КАЛИНКА:", permutations_kalinka())
+print("8. Перестановки ИДИЛЛИЯ:", permutations_idilliya())
+print("9. Семеричные шестизначные числа:", count_base7_six_digit())
+print("10. Семеричные пятизначные числа с одной 4:", count_base7_one_four())
+print("11. Числа, оканчивающиеся на 34:", count_numbers_ending_34())
+print("12. Числа, оканчивающиеся на 26:", count_numbers_ending_26())
+print("13. Номер слова (начинается на О, Е не рядом):", find_word_number())
+print("14. Номер слова (начинается на К, Р не рядом):", find_word_number_k())
+print("15. Слова с буквой Г 2 раза:", count_words_with_g())
+print("16. Слова с буквой О 2 раза:", count_words_with_o())
+print("17. Слова, оканчивающиеся на Е, с буквой А:", count_words_ending_e())
