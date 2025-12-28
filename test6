@@ -1,0 +1,568 @@
+from turtle import *
+import tkinter as tk
+from tkinter import ttk, messagebox
+import math
+import time
+
+# Глобальные переменные
+turtle_screen = None
+canvas = None
+k = 40  # масштаб
+points = set()  # точки для подсчета
+
+def setup_turtle():
+    """Настройка черепахи"""
+    global turtle_screen
+    turtle_screen = Screen()
+    turtle_screen.setup(800, 800)
+    turtle_screen.title("Черепаха - решение задач")
+    turtle_screen.bgcolor("white")
+    
+    # Ускорение отрисовки
+    tracer(0, 0)
+    hideturtle()
+
+def draw_grid():
+    """Отрисовка сетки и координатных осей"""
+    penup()
+    color("lightgray")
+    
+    # Вертикальные линии
+    for x in range(-20, 21):
+        goto(x * k, -20 * k)
+        pendown()
+        goto(x * k, 20 * k)
+        penup()
+    
+    # Горизонтальные линии
+    for y in range(-20, 21):
+        goto(-20 * k, y * k)
+        pendown()
+        goto(20 * k, y * k)
+        penup()
+    
+    # Координатные оси
+    color("black")
+    pensize(2)
+    goto(-20 * k, 0)
+    pendown()
+    goto(20 * k, 0)
+    penup()
+    goto(0, -20 * k)
+    pendown()
+    goto(0, 20 * k)
+    penup()
+    
+    # Подписи осей
+    for x in range(-20, 21, 5):
+        goto(x * k, -0.5 * k)
+        write(str(x), align="center", font=("Arial", 10, "normal"))
+    
+    for y in range(-20, 21, 5):
+        if y != 0:
+            goto(-0.7 * k, y * k)
+            write(str(y), align="right", font=("Arial", 10, "normal"))
+
+def reset_turtle():
+    """Сброс черепахи в начальное состояние"""
+    penup()
+    home()
+    setheading(90)  # смотрим вверх (положительное направление оси ординат)
+    pendown()
+    color("blue")
+    pensize(2)
+
+def execute_algorithm(algorithm_num, params=None):
+    """Выполнение алгоритма в зависимости от номера задачи"""
+    global points
+    points.clear()
+    
+    # Очистка экрана
+    clear()
+    draw_grid()
+    reset_turtle()
+    
+    # Основной цвет для рисования фигуры
+    color("blue")
+    pensize(2)
+    pendown()
+    
+    # Записываем все точки траектории
+    trajectory = [(0, 0)]
+    
+    def add_trajectory_point():
+        x, y = position()
+        trajectory.append((x, y))
+    
+    if algorithm_num == 1:
+        # Прямоугольники задача 1
+        for _ in range(4):
+            forward(5 * k)
+            add_trajectory_point()
+            right(90)
+            forward(10 * k)
+            add_trajectory_point()
+            right(90)
+    
+    elif algorithm_num == 2:
+        # Прямоугольники задача 2
+        for _ in range(4):
+            forward(7 * k)
+            add_trajectory_point()
+            right(30)
+            forward(6 * k)  # предположим, что "в" = 6
+            add_trajectory_point()
+            right(150)
+    
+    elif algorithm_num == 3:
+        # Прямоугольники задача 3
+        for _ in range(4):
+            forward(9 * k)
+            add_trajectory_point()
+            right(50)
+            forward(7 * k)
+            add_trajectory_point()
+            right(90)
+    
+    elif algorithm_num == 4:
+        # Прямоугольники задача 4
+        for _ in range(4):
+            forward(5 * k)
+            add_trajectory_point()
+            right(30)
+            forward(7 * k)
+            add_trajectory_point()
+            right(150)
+    
+    elif algorithm_num == 5:
+        # Прямоугольники задача 5
+        for _ in range(10):
+            forward(9 * k)
+            add_trajectory_point()
+            right(10)
+            forward(2 * k)
+            add_trajectory_point()
+            right(90)
+    
+    elif algorithm_num == 6:
+        # Прямоугольники задача 6
+        for _ in range(4):
+            forward(7 * k)
+            add_trajectory_point()
+            right(30)
+            forward(7 * k)
+            add_trajectory_point()
+            left(10)
+            forward(7 * k)
+            add_trajectory_point()
+            right(90)
+    
+    elif algorithm_num == 7:
+        # Прямоугольники задача 7 (с параметром)
+        n = params.get('n', 5)
+        for _ in range(n):
+            forward(10 * k)
+            add_trajectory_point()
+            right(50)
+            forward(11 * k)
+            add_trajectory_point()
+    
+    elif algorithm_num == 8:
+        # Прямоугольники задача 8 (с параметром k)
+        n = params.get('n', 6)
+        m = params.get('m', 7)
+        for _ in range(n):
+            forward(m * k)
+            add_trajectory_point()
+            right(90)
+            forward(7 * k)
+            add_trajectory_point()
+    
+    elif algorithm_num == 9:
+        # Треугольники задача 1
+        for _ in range(7):
+            forward(10 * k)
+            add_trajectory_point()
+            right(120)
+    
+    elif algorithm_num == 10:
+        # Треугольники задача 2
+        for _ in range(5):
+            forward(9 * k)
+            add_trajectory_point()
+            right(120)
+    
+    elif algorithm_num == 11:
+        # Треугольники задача 3
+        for _ in range(4):
+            forward(14 * k)
+            add_trajectory_point()
+            right(120)
+    
+    elif algorithm_num == 12:
+        # Треугольники задача 4 (с параметром B)
+        b = params.get('b', 6)
+        for _ in range(b):
+            forward(6 * k)
+            add_trajectory_point()
+            right(120)
+    
+    elif algorithm_num == 13:
+        # Треугольники задача 5
+        for _ in range(5):
+            forward(8 * k)
+            add_trajectory_point()
+            right(60)
+            forward(8 * k)
+            add_trajectory_point()
+            right(120)
+    
+    elif algorithm_num == 14:
+        # Треугольники задача 6
+        for _ in range(4):
+            forward(8 * k)
+            add_trajectory_point()
+            right(150)
+            forward(8 * k)
+            add_trajectory_point()
+            right(30)
+    
+    elif algorithm_num == 15:
+        # Треугольники задача 7
+        for _ in range(4):
+            forward(6 * k)
+            add_trajectory_point()
+            right(150)
+            forward(6 * k)
+            add_trajectory_point()
+            right(30)
+    
+    elif algorithm_num == 16:
+        # Треугольники задача 8
+        for _ in range(4):
+            forward(12 * k)
+            add_trajectory_point()
+            right(150)
+            forward(12 * k)
+            add_trajectory_point()
+            right(30)
+    
+    elif algorithm_num == 17:
+        # Треугольники задача 9
+        right(315)
+        for _ in range(7):
+            forward(16 * k)
+            add_trajectory_point()
+            right(45)
+            forward(8 * k)
+            add_trajectory_point()
+            right(135)
+    
+    elif algorithm_num == 18:
+        # Треугольники задача 10
+        right(45)
+        for _ in range(7):
+            forward(5 * k)
+            add_trajectory_point()
+            right(45)
+            forward(10 * k)
+            add_trajectory_point()
+            right(135)
+    
+    elif algorithm_num == 19:
+        # Объединение фигур задача 1
+        # Первый квадрат
+        for _ in range(4):
+            forward(12 * k)
+            add_trajectory_point()
+            right(90)
+        
+        # Поворот
+        penup()
+        right(30)
+        pendown()
+        
+        # Треугольник
+        for _ in range(3):
+            forward(8 * k)
+            add_trajectory_point()
+            right(60)
+            forward(8 * k)
+            add_trajectory_point()
+            right(120)
+    
+    else:
+        # Простой квадрат по умолчанию
+        for _ in range(4):
+            forward(10 * k)
+            add_trajectory_point()
+            right(90)
+    
+    # Замыкаем фигуру
+    if len(trajectory) > 1:
+        penup()
+        goto(trajectory[0])
+        pendown()
+        goto(trajectory[-1])
+    
+    # Подсчет точек
+    count_points(trajectory, include_boundary=(algorithm_num in [1, 4, 5, 7, 8]))
+    
+    # Отображение точек
+    display_points()
+    
+    update()
+
+def count_points(trajectory, include_boundary=True):
+    """Подсчет целочисленных точек внутри фигуры"""
+    global points
+    
+    if len(trajectory) < 3:
+        return
+    
+    # Находим границы фигуры
+    x_coords = [p[0] for p in trajectory]
+    y_coords = [p[1] for p in trajectory]
+    
+    min_x, max_x = min(x_coords), max(x_coords)
+    min_y, max_y = min(y_coords), max(y_coords)
+    
+    # Переводим в целочисленные координаты (в масштабе k)
+    min_x_int = int(min_x / k) - 1
+    max_x_int = int(max_x / k) + 1
+    min_y_int = int(min_y / k) - 1
+    max_y_int = int(max_y / k) + 1
+    
+    # Проверяем каждую целочисленную точку
+    for x_int in range(min_x_int, max_x_int + 1):
+        for y_int in range(min_y_int, max_y_int + 1):
+            x = x_int * k
+            y = y_int * k
+            
+            # Проверка на принадлежность многоугольнику
+            if is_point_in_polygon(x, y, trajectory):
+                if include_boundary or not is_point_on_boundary(x, y, trajectory):
+                    points.add((x_int, y_int))
+
+def is_point_in_polygon(x, y, polygon):
+    """Проверка точки на принадлежность многоугольнику (алгоритм ray casting)"""
+    n = len(polygon)
+    inside = False
+    
+    p1x, p1y = polygon[0]
+    for i in range(1, n + 1):
+        p2x, p2y = polygon[i % n]
+        if y > min(p1y, p2y):
+            if y <= max(p1y, p2y):
+                if x <= max(p1x, p2x):
+                    if p1y != p2y:
+                        xinters = (y - p1y) * (p2x - p1x) / (p2y - p1y) + p1x
+                    if p1x == p2x or x <= xinters:
+                        inside = not inside
+        p1x, p1y = p2x, p2y
+    
+    return inside
+
+def is_point_on_boundary(x, y, polygon, tolerance=0.1):
+    """Проверка, лежит ли точка на границе многоугольника"""
+    n = len(polygon)
+    for i in range(n):
+        x1, y1 = polygon[i]
+        x2, y2 = polygon[(i + 1) % n]
+        
+        # Проверка расстояния до отрезка
+        if point_segment_distance(x, y, x1, y1, x2, y2) < tolerance * k:
+            return True
+    
+    return False
+
+def point_segment_distance(px, py, x1, y1, x2, y2):
+    """Расстояние от точки до отрезка"""
+    A = px - x1
+    B = py - y1
+    C = x2 - x1
+    D = y2 - y1
+    
+    dot = A * C + B * D
+    len_sq = C * C + D * D
+    
+    if len_sq == 0:
+        return math.sqrt(A * A + B * B)
+    
+    param = dot / len_sq
+    
+    if param < 0:
+        xx, yy = x1, y1
+    elif param > 1:
+        xx, yy = x2, y2
+    else:
+        xx = x1 + param * C
+        yy = y1 + param * D
+    
+    dx = px - xx
+    dy = py - yy
+    return math.sqrt(dx * dx + dy * dy)
+
+def display_points():
+    """Отображение подсчитанных точек"""
+    global points
+    
+    penup()
+    color("red")
+    
+    for x_int, y_int in points:
+        x = x_int * k
+        y = y_int * k
+        
+        # Маленькая точка
+        goto(x - 2, y - 2)
+        pendown()
+        begin_fill()
+        for _ in range(4):
+            forward(4)
+            right(90)
+        end_fill()
+        penup()
+
+def solve_task():
+    """Решение выбранной задачи"""
+    try:
+        task_num = int(task_var.get().split()[0])
+        
+        # Получение параметров, если есть
+        params = {}
+        if param_var.get():
+            try:
+                params['n'] = int(param_var.get())
+            except:
+                pass
+        
+        # Выполнение алгоритма
+        execute_algorithm(task_num, params)
+        
+        # Показ результата
+        result_text = f"Найдено точек: {len(points)}\n"
+        result_text += f"Координаты: {sorted(points)[:20]}"
+        if len(points) > 20:
+            result_text += f"\n... и еще {len(points) - 20} точек"
+        
+        result_label.config(text=result_text)
+        
+    except Exception as e:
+        messagebox.showerror("Ошибка", f"Ошибка при выполнении: {str(e)}")
+
+def clear_screen():
+    """Очистка экрана"""
+    clear()
+    draw_grid()
+    result_label.config(text="")
+    points.clear()
+    update()
+
+def create_gui():
+    """Создание графического интерфейса"""
+    global task_var, param_var, result_label
+    
+    root = tk.Tk()
+    root.title("Управление задачами Черепахи")
+    root.geometry("400x600")
+    
+    # Стиль
+    style = ttk.Style()
+    style.theme_use('clam')
+    
+    # Основной фрейм
+    main_frame = ttk.Frame(root, padding="10")
+    main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+    
+    # Заголовок
+    title_label = ttk.Label(main_frame, text="Решение задач Черепахи", 
+                           font=("Arial", 14, "bold"))
+    title_label.grid(row=0, column=0, columnspan=2, pady=10)
+    
+    # Выбор задачи
+    ttk.Label(main_frame, text="Выберите задачу:").grid(row=1, column=0, sticky=tk.W, pady=5)
+    
+    tasks = [
+        "1 - Прямоугольник 1 (включая границу)",
+        "2 - Прямоугольник 2 (только внутри)",
+        "3 - Прямоугольник 3 (только внутри)",
+        "4 - Прямоугольник 4 (включая границу)",
+        "5 - Прямоугольник 5 (включая границу)",
+        "6 - Прямоугольник 6",
+        "7 - Прямоугольник 7 (с параметром n)",
+        "8 - Прямоугольник 8 (с параметрами)",
+        "9 - Треугольник 1 (7 сторон)",
+        "10 - Треугольник 2 (5 сторон)",
+        "11 - Треугольник 3 (4 стороны)",
+        "12 - Треугольник 4 (B сторон)",
+        "13 - Ромб 1",
+        "14 - Ромб 2",
+        "15 - Ромб 3",
+        "16 - Ромб 4",
+        "17 - Звезда 1",
+        "18 - Звезда 2",
+        "19 - Объединение фигур 1"
+    ]
+    
+    task_var = tk.StringVar(value=tasks[0])
+    task_combo = ttk.Combobox(main_frame, textvariable=task_var, 
+                             values=tasks, width=35, state="readonly")
+    task_combo.grid(row=2, column=0, columnspan=2, pady=5, padx=5)
+    
+    # Параметр (если нужен)
+    ttk.Label(main_frame, text="Параметр (если требуется):").grid(row=3, column=0, sticky=tk.W, pady=5)
+    param_var = tk.StringVar()
+    param_entry = ttk.Entry(main_frame, textvariable=param_var, width=15)
+    param_entry.grid(row=3, column=1, pady=5, padx=5)
+    
+    # Кнопки управления
+    button_frame = ttk.Frame(main_frame)
+    button_frame.grid(row=4, column=0, columnspan=2, pady=15)
+    
+    solve_btn = ttk.Button(button_frame, text="Решить задачу", command=solve_task, width=15)
+    solve_btn.pack(side=tk.LEFT, padx=5)
+    
+    clear_btn = ttk.Button(button_frame, text="Очистить", command=clear_screen, width=15)
+    clear_btn.pack(side=tk.LEFT, padx=5)
+    
+    # Результат
+    result_label = ttk.Label(main_frame, text="", relief=tk.SUNKEN, 
+                            padding=10, wraplength=350, background="white")
+    result_label.grid(row=5, column=0, columnspan=2, pady=10, sticky=(tk.W, tk.E))
+    
+    # Информация
+    info_text = """
+    Инструкция:
+    1. Выберите задачу из списка
+    2. Введите параметр (если требуется)
+    3. Нажмите "Решить задачу"
+    4. Синие линии - фигура
+    5. Красные точки - целочисленные точки
+    6. Серые линии - координатная сетка
+    """
+    
+    info_label = ttk.Label(main_frame, text=info_text, justify=tk.LEFT,
+                          foreground="darkblue", wraplength=380)
+    info_label.grid(row=6, column=0, columnspan=2, pady=10)
+    
+    # Кнопка выхода
+    exit_btn = ttk.Button(main_frame, text="Выход", command=root.quit, width=15)
+    exit_btn.grid(row=7, column=0, columnspan=2, pady=10)
+    
+    return root
+
+def main():
+    """Основная функция"""
+    setup_turtle()
+    root = create_gui()
+    
+    # Начальная отрисовка сетки
+    draw_grid()
+    update()
+    
+    # Запуск GUI
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
